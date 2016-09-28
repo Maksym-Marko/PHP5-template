@@ -16,20 +16,31 @@ class DBconect{
 	}
 
 	static public function SelectData( $td, $table ){
-		$std = self::$mysql->query( 'SELECT' . $td . 'FROM ' . $table );		
+		$std = self::$mysql->query( 'SELECT ' . $td . ' FROM ' . $table );		
 	}
 }
 
 /* Creating a successor parameters for data output */
 class SelectedID extends DBconect{
 	static public function SelectData( $td = '*', $table = 'wp_posts' ){
-		$std = self::$mysql->query( 'SELECT' . $td . 'FROM ' . $table );
+		$std = self::$mysql->query( 'SELECT ' . $td . ' FROM ' . $table );
 		foreach ( $std as $row ) {
-			?>
-			<article>
+			?><article>
 				<?=$row['ID']?>
-			</article>
-			<?php
+			</article><?
+		}
+	}
+}
+
+/* bring news */
+class SelectedNews extends DBconect{
+	static public function SelectData( $td = 'post_content', $table = 'wp_posts' ){
+		$std = self::$mysql->query( 'SELECT ' . $td . ' FROM ' . $table . ' ORDER BY id DESC' );
+		foreach ( $std as $row ) {
+			?><article>
+				<?=$row[$td]?>
+				<hr>
+			</article><?
 		}
 	}
 }
@@ -96,6 +107,27 @@ class CreateLinkPage extends GetUrlPage{
 	}
 }
 
+/* Background sections */
+abstract class BackgroundSections{
+	abstract protected function SetColors();
+
+	public function CreateStyle(){
+		echo '<style>';
+		$this->SetColors();
+		echo '</style>';
+	}
+}
+
+class CreateBGColor extends BackgroundSections{
+	protected function SetColors(){
+		?>
+		header{ background: yellow; }
+		body{ background: green; }
+		footer{ background: #999; }
+		<?
+	}
+}
+
 /*
 *
 *	
@@ -113,6 +145,11 @@ $conect = new DBconect();
 	<head>
 		<meta charset="UTF-8">
 		<title>PHP5</title>
+		<?
+		/* Create css */
+		$StyleCSS = new CreateBGColor();
+		$StyleCSS->CreateStyle();
+		?>
 	</head>
 	<body>
 		<header>
@@ -131,6 +168,11 @@ $conect = new DBconect();
 			<?php
 			/* Output from the database id */
 			SelectedID::SelectData();
+			?>
+		</section>
+		<section>
+			<?
+			SelectedNews::SelectData();
 			?>
 		</section>
 		<aside>
