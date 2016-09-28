@@ -82,6 +82,20 @@ class AdminPanel{
 	}	
 }
 
+/* Get url page */
+class GetUrlPage{
+	protected $urlpage;
+	public function GetUrlPage(){
+		$this->urlpage = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+	}
+}
+
+class CreateLinkPage extends GetUrlPage{
+	public function CreateLink(){
+		echo '<a href="http://' . $this->urlpage . '">http://' . $this->urlpage . '</a>';
+	}
+}
+
 /*
 *
 *	
@@ -134,6 +148,7 @@ $conect = new DBconect();
 					?>
 				</ul>
 			</nav>
+			<div>This page is: <? $geturl = new CreateLinkPage(); $geturl->CreateLink(); ?></div>
 		</footer>
 	</body>
 </html>
